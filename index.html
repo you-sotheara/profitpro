@@ -299,7 +299,7 @@
 <tr>
 <th class="px-6 py-4">Year</th>
 <th class="px-6 py-4">Contribution</th>
-<th class="px-6 py-4">Interest Earned</th>
+<th class="px-6 py-4">Interest Earned</th><th class="px-6 py-4">Tax Amount</th>
 <th class="px-6 py-4">Total Invested</th>
 <th class="px-6 py-4">End Balance</th>
 </tr>
@@ -474,6 +474,7 @@
       let tableRows = '';
       
       let cumulativeInvested = P;
+      let totalTaxesPaid = 0;
 
       for (let year = 1; year <= durationYears; year++) {
         const t = year * periodsPerYear;
@@ -482,7 +483,6 @@
         if (r === 0) {
           currentFV = P + (PMT * t);
         } else {
-          // FV = P(1+r)^t + PMT * [((1+r)^t - 1) / r]
           currentFV = P * Math.pow(1 + r, t) + PMT * ((Math.pow(1 + r, t) - 1) / r);
         }
 
@@ -492,24 +492,25 @@
         const prevT = (year - 1) * periodsPerYear;
         const prevFV = (r === 0) ? P + (PMT * prevT) : P * Math.pow(1 + r, prevT) + PMT * ((Math.pow(1 + r, prevT) - 1) / r);
         const yearInterest = currentFV - prevFV - yearContribution;
+        const yearlyTax = yearInterest > 0 ? yearInterest * taxRate : 0;
+        totalTaxesPaid += yearlyTax;
 
         chartDataInvested.push(cumulativeInvested);
-        chartDataPortfolio.push(currentFV);
+        chartDataPortfolio.push(currentFV - totalTaxesPaid);
 
         tableRows += `
           <tr class="hover:bg-gray-50 dark:hover:bg-surface-800 transition-colors border-b border-gray-200 dark:border-gray-800 table-row-border">
 <td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-medium">Year ${year}</td>
 <td class="px-6 py-4 text-gray-900 dark:text-gray-100">$${yearContribution.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
 <td class="px-6 py-4 text-emerald-600 dark:text-emerald-500 font-medium">+$${Math.max(0, yearInterest).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+<td class="px-6 py-4 text-red-600 dark:text-red-400 font-medium">-$${yearlyTax.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
 <td class="px-6 py-4 text-gray-900 dark:text-gray-100">$${cumulativeInvested.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-<td class="px-6 py-4 font-bold text-gray-900 dark:text-gray-100">$${currentFV.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+<td class="px-6 py-4 font-bold text-gray-900 dark:text-gray-100">$${(currentFV - totalTaxesPaid).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
 </tr>`;
       }
 
       const finalGrossValue = chartDataPortfolio[chartDataPortfolio.length - 1];
-      const totalGrowth = finalGrossValue - cumulativeInvested;
-      const taxAmount = totalGrowth > 0 ? totalGrowth * taxRate : 0;
-      const netFinalValue = finalGrossValue - taxAmount;
+      const netFinalValue = finalGrossValue;
       const netProfit = netFinalValue - cumulativeInvested;
 
       updateUI(netFinalValue, cumulativeInvested, netProfit);
@@ -562,7 +563,7 @@
     }
 
     function exportToCSV() {
-      let csv = "Year,Contribution,Interest Earned,Total Invested,End Balance\n";
+      let csv = "Year,Contribution,Interest Earned,Tax Amount,Total Invested,End Balance\n";
       elements.tableBody.querySelectorAll('tr').forEach(row => {
         csv += Array.from(row.querySelectorAll('td')).map(c => c.innerText.replace(/[$,+]/g, '')).join(',') + "\n";
       });
@@ -598,8 +599,7 @@
     // PWA-like prompt for 'Add to Home Screen'
     document.getElementById('addToHome')?.addEventListener('click', () => {
         alert('To add this app to your home screen: Tap the Share button in your browser and select "Add to Home Screen".');
-    });
-    </script>
+    });</script>
 <!-- END: LogicScripts -->
 <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300" id="sidebarOverlay"></div><script>
     // Service Worker Registration
