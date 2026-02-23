@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/><meta content="ProfitPro: Advanced Investment Calculator for planning your financial future. Calculate growth projections, portfolio value, and amortization schedules." name="description"/><meta content="investment calculator, compound interest, financial planning, portfolio growth, profit projection, savings calculator" name="keywords"/>
+<meta content="ProfitPro | Advanced Investment &amp; Compound Interest Calculator" property="og:title"/>
+<meta content="Plan your financial future with precision using our advanced investment growth calculator." property="og:description"/>
+<meta content="website" property="og:type"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProfitPro | Advanced Investment &amp; Compound Interest Calculator</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ProfitPro",
+  "operatingSystem": "All",
+  "applicationCategory": "FinanceApplication",
+  "description": "Advanced investment calculator for planning your financial future. Calculate growth projections, portfolio value, and amortization schedules.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0"
+  }
+}
+</script>
+<script>    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1152d4',
+            surface: {
+              50: '#f9fafb',
+              100: '#f3f4f6',
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            }
+          },
+          borderRadius: {
+            'custom': '8px',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }</script>
+<style data-purpose="custom-styles">
+    body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease; }
+    .slider-thumb::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #1152d4;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 10px;
+    }
+    /* Vibrant Light Mode Styles */
+    html:not(.dark) body {
+      background: linear-gradient(135deg, #f5f7ff 0%, #e0e7ff 100%);
+    }
+    html:not(.dark) .vibrant-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 25px -5px rgba(17, 82, 212, 0.15), 0 8px 10px -6px rgba(17, 82, 212, 0.1);
+      border-color: #ffffff;
+    }
+    html:not(.dark) .header-gradient {
+      background: linear-gradient(to right, #1e40af, #3b82f6, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+    html:not(.dark) aside {
+        background: linear-gradient(to bottom, #ffffff, #f0f4ff) !important;
+    }
+    html:not(.dark) .table-row-border {
+        border-color: #e5e7eb !important;
+    }
+    html:not(.dark) .invested-capital-value {
+        color: #1e3a8a !important;
+    }
+  </style>
+</head>
+<body class="dark:bg-surface-950 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200 dark:bg-surface-950 transition-colors duration-300">
+<!-- BEGIN: MainLayout -->
+<div class="flex flex-col lg:flex-row min-h-screen">
+<!-- BEGIN: Sidebar -->
+<aside class="w-full lg:w-64 bg-gray-50 dark:bg-surface-900 border-r border-gray-200 dark:border-gray-800 flex flex-col p-6 space-y-8 min-h-screen" data-purpose="navigation-sidebar">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 bg-primary rounded-custom flex items-center justify-center">
+<svg aria-hidden="true" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-xl font-bold tracking-tight">ProfitPro</span>
+</div>
+<nav class="flex-1 space-y-2">
+<button aria-label="Investment Calculator" class="w-full flex items-center space-x-3 bg-primary/10 text-primary p-3 rounded-custom transition-colors">
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="font-medium">Calculator</span>
+</button>
+</nav>
+<div class="pt-6 border-t border-gray-800">
+<button aria-label="Toggle Dark Mode" class="w-full flex items-center justify-between text-sm text-gray-400 p-2" id="themeToggle"><span>Dark Mode</span>
+<div class="toggle-bg w-10 h-5 bg-gray-300 dark:bg-primary rounded-full relative transition-colors">
+<div class="toggle-dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-all"></div>
+</div></button>
+</div>
+<footer class="mt-auto pt-6 border-t border-gray-200 dark:border-gray-800">
+<p class="text-xs text-gray-500 dark:text-gray-400 font-medium">
+    Email: <a aria-label="Send an email to contactme@gmail.com" class="hover:text-primary transition-colors" href="mailto:contactme@gmail.com">contactme@gmail.com</a>
+</p>
+</footer></aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8 custom-scrollbar">
+<!-- BEGIN: HeaderSection -->
+<header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h1 class="text-3xl font-bold header-gradient">Investment Dashboard</h1>
+<p class="text-gray-400">Plan your financial future with precision.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 bg-transparent hover:bg-primary/5 text-primary dark:text-gray-300 border border-primary dark:border-gray-700 rounded-custom text-sm font-medium transition-all" onclick="exportToCSV()">
+            Export to CSV
+          </button>
+</div>
+</header>
+<!-- END: HeaderSection -->
+<!-- BEGIN: MetricsCards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-purpose="top-metrics">
+<div class="bg-surface-900 border border-gray-800 p-6 rounded-custom bg-white dark:bg-surface-900 border-gray-200 dark:border-gray-800 shadow-sm vibrant-card">
+<p class="text-xs text-blue-600 dark:text-gray-400 uppercase tracking-widest font-bold">Total Portfolio Value</p>
+<p class="text-4xl font-bold text-primary mt-2" id="totalPortfolioValue">$0.00</p>
+</div>
+<div class="bg-surface-900 border border-gray-800 p-6 rounded-custom bg-white dark:bg-surface-900 border-gray-200 dark:border-gray-800 shadow-sm vibrant-card">
+<p class="text-xs text-blue-600 dark:text-gray-400 uppercase tracking-widest font-bold">Total Invested Capital</p>
+<p class="text-4xl font-bold text-gray-900 dark:text-gray-100 mt-2 invested-capital-value" id="totalInvestedCapital">$0.00</p>
+</div>
+<div class="bg-surface-900 border border-gray-800 p-6 rounded-custom bg-white dark:bg-surface-900 border-gray-200 dark:border-gray-800 shadow-sm vibrant-card">
+<p class="text-xs text-blue-600 dark:text-gray-400 uppercase tracking-widest font-bold">Total Projected Profit</p>
+<p class="text-4xl font-bold text-emerald-500 mt-2" id="totalProfit">$0.00</p>
+</div>
+</div>
+<!-- END: MetricsCards -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+<!-- BEGIN: InputParameters -->
+<section class="xl:col-span-4 space-y-6" data-purpose="input-section">
+<div class="bg-surface-900 border border-gray-800 p-6 rounded-custom bg-white dark:bg-surface-900 border-gray-200 dark:border-gray-800 vibrant-card">
+<h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">Investment Parameters</h2>
+<div class="space-y-6"><!-- Initial Investment -->
+<div class="space-y-2">
+<div class="flex justify-between">
+<label class="text-sm font-semibold text-blue-900 dark:text-gray-300">Initial Investment ($)</label>
+<input aria-label="Initial Investment Amount" class="w-32 bg-white dark:bg-surface-800 border-gray-200 dark:border-none rounded-custom text-right text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary" id="initInvestNum" type="text" value="10,000"/>
+</div>
+<input aria-label="Initial Investment Slider" class="w-full h-2 bg-gray-200 dark:bg-surface-800 rounded-lg appearance-none cursor-pointer slider-thumb" id="initInvestSlider" max="1000000" min="0" step="1000" type="range" value="10000"/>
+</div>
+<!-- Contribution -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="text-sm font-semibold text-blue-900 dark:text-gray-300">Periodic Contribution ($)</label>
+<div class="flex bg-gray-100 dark:bg-surface-800 rounded-custom p-1 text-xs font-semibold">
+<button class="px-2 py-1 rounded-custom bg-primary text-white" id="freqWeekly">Weekly</button>
+<button class="px-2 py-1 rounded-custom text-gray-400" id="freqMonthly">Monthly</button>
+<button class="px-2 py-1 rounded-custom text-gray-400" id="freqQuarterly">Quarterly</button>
+</div>
+</div>
+<div class="flex gap-4">
+<input aria-label="Periodic Contribution Amount" class="flex-1 bg-white dark:bg-surface-800 border-gray-200 dark:border-none rounded-custom text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary" id="contribNum" type="text" value="500"/>
+</div>
+</div>
+<!-- Return Rate -->
+<div class="space-y-2">
+<div class="flex justify-between">
+<label class="text-sm font-semibold text-blue-900 dark:text-gray-300">Annual Return Rate (%)</label>
+<input aria-label="Annual Return Rate Percentage" class="w-32 bg-white dark:bg-surface-800 border-gray-200 dark:border-none rounded-custom text-right text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary" id="returnRateNum" type="text" value="7"/>
+</div>
+<input aria-label="Annual Return Rate Slider" class="w-full h-2 bg-gray-200 dark:bg-surface-800 rounded-lg appearance-none cursor-pointer slider-thumb" id="returnRateSlider" max="30" min="0" step="0.5" type="range" value="7"/>
+</div>
+<!-- Duration -->
+<div class="space-y-2">
+<div class="flex justify-between">
+<label class="text-sm font-semibold text-blue-900 dark:text-gray-300">Duration (Years)</label>
+<input aria-label="Investment Duration in Years" class="w-32 bg-white dark:bg-surface-800 border-gray-200 dark:border-none rounded-custom text-right text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary" id="durationNum" type="text" value="10"/>
+</div>
+<input aria-label="Investment Duration Slider" class="w-full h-2 bg-gray-200 dark:bg-surface-800 rounded-lg appearance-none cursor-pointer slider-thumb" id="durationSlider" max="50" min="1" step="1" type="range" value="10"/>
+</div>
+<!-- Advanced Toggle -->
+<details class="group border-t border-gray-800 pt-4">
+<summary class="flex justify-between items-center cursor-pointer list-none text-sm font-semibold text-primary">
+<span>Advanced Options</span>
+<svg class="w-4 h-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</summary>
+<div class="pt-4 space-y-4"><div class="space-y-4">
+<div class="flex items-center justify-between text-sm">
+<label class="text-sm font-semibold text-blue-900 dark:text-gray-300">Compounding Frequency</label>
+<select aria-label="Select Compounding Frequency" class="bg-gray-100 dark:bg-surface-800 border-none rounded-custom text-xs text-gray-900 dark:text-gray-100 focus:ring-primary" id="compoundFreq">
+<option value="12">Monthly</option>
+<option value="4">Quarterly</option>
+<option value="2">Semi-Annually</option>
+<option value="1">Annually</option>
+</select>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="text-sm font-semibold text-blue-900 dark:text-gray-300">Expected Inflation (%)</label>
+<input aria-label="Expected Inflation Percentage" class="w-20 bg-gray-100 dark:bg-surface-800 border-none rounded-custom text-right text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary" id="inflationRateNum" type="text" value="0"/>
+</div>
+<input class="w-full h-2 bg-gray-200 dark:bg-surface-800 rounded-lg appearance-none cursor-pointer slider-thumb" id="inflationRateSlider" max="20" min="0" step="0.1" type="range" value="0"/>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="text-sm font-semibold text-blue-900 dark:text-gray-300">Tax Rate (%)</label>
+<input aria-label="Tax Rate Percentage" class="w-20 bg-gray-100 dark:bg-surface-800 border-none rounded-custom text-right text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary" id="taxRateNum" type="text" value="0"/>
+</div>
+<input class="w-full h-2 bg-gray-200 dark:bg-surface-800 rounded-lg appearance-none cursor-pointer slider-thumb" id="taxRateSlider" max="50" min="0" step="0.5" type="range" value="0"/>
+</div>
+</div></div>
+</details></div>
+</div>
+</section>
+<!-- END: InputParameters -->
+<!-- BEGIN: ProjectionsSection -->
+<section class="xl:col-span-8 space-y-6" data-purpose="visual-projections">
+<div class="bg-surface-900 border border-gray-800 p-6 rounded-custom min-h-[400px] bg-white dark:bg-surface-900 border-gray-200 dark:border-gray-800 vibrant-card">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Growth Projection</h2>
+<div class="flex gap-2">
+<span class="flex items-center text-xs text-gray-400">
+<span class="w-3 h-3 bg-primary rounded-full mr-2"></span> Portfolio Value
+                </span>
+<span class="flex items-center text-xs text-gray-400">
+<span class="w-3 h-3 bg-gray-500 rounded-full mr-2"></span> Total Invested
+                </span>
+</div>
+</div>
+<div class="h-[300px] w-full">
+<canvas id="growthChart"></canvas>
+</div>
+</div>
+<!-- BEGIN: ScenariosComparison -->
+<!-- END: ScenariosComparison -->
+</section>
+<!-- END: ProjectionsSection -->
+</div>
+<!-- BEGIN: DataTableSection -->
+<section class="bg-surface-900 border border-gray-800 rounded-custom overflow-hidden bg-white dark:bg-surface-900 border-gray-200 dark:border-gray-800 vibrant-card" data-purpose="projection-table">
+<div class="p-6 border-b border-gray-800">
+<h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Investment Growth Schedule</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="text-gray-400 font-medium bg-gray-50 dark:bg-surface-800 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-800">
+<tr>
+<th class="px-6 py-4">Year</th>
+<th class="px-6 py-4">Contribution</th>
+<th class="px-6 py-4">Interest Earned</th>
+<th class="px-6 py-4">Total Invested</th>
+<th class="px-6 py-4">End Balance</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-800 table-row-border" id="projectionTableBody">
+<!-- Rows added by JS -->
+</tbody>
+</table>
+</div>
+</section>
+<!-- END: DataTableSection -->
+</main>
+<!-- END: MainContent -->
+</div>
+<!-- END: MainLayout -->
+<!-- BEGIN: LogicScripts -->
+<script data-purpose="calculator-logic">    // Global State
+    let contributionFrequency = 'monthly';
+    let growthChart;
+
+    const elements = {
+      initInvestNum: document.getElementById('initInvestNum'),
+      initInvestSlider: document.getElementById('initInvestSlider'),
+      contribNum: document.getElementById('contribNum'),
+      returnRateNum: document.getElementById('returnRateNum'),
+      returnRateSlider: document.getElementById('returnRateSlider'),
+      durationNum: document.getElementById('durationNum'),
+      durationSlider: document.getElementById('durationSlider'),
+      compoundFreq: document.getElementById('compoundFreq'),
+      inflationRateNum: document.getElementById('inflationRateNum'),
+      inflationRateSlider: document.getElementById('inflationRateSlider'),
+      taxRateNum: document.getElementById('taxRateNum'),
+      taxRateSlider: document.getElementById('taxRateSlider'),
+      freqMonthly: document.getElementById('freqMonthly'),
+      freqWeekly: document.getElementById('freqWeekly'),
+      freqQuarterly: document.getElementById('freqQuarterly'),
+      displayTotal: document.getElementById('totalPortfolioValue'),
+      displayInvested: document.getElementById('totalInvestedCapital'),
+      displayProfit: document.getElementById('totalProfit'),
+      tableBody: document.getElementById('projectionTableBody'),
+      themeToggle: document.getElementById('themeToggle')
+    };
+
+    function formatNumber(val) {
+      if (val === undefined || val === null || val === '') return '';
+      const num = parseFloat(val.toString().replace(/,/g, ''));
+      if (isNaN(num)) return '';
+      return num.toLocaleString('en-US', { maximumFractionDigits: 2 });
+    }
+
+    function parseNumber(val) {
+      if (typeof val !== 'string') return val || 0;
+      return parseFloat(val.replace(/,/g, '')) || 0;
+    }
+
+    function init() {
+      const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+      setupChart();
+      setupEventListeners();
+      updateThemeUI(document.documentElement.classList.contains('dark'));
+      calculate();
+    }
+
+    function updateThemeUI(isDark) {
+      const dot = document.querySelector('.toggle-dot');
+      const bg = document.querySelector('.toggle-bg');
+      if (isDark) {
+        dot.style.transform = 'translateX(1.25rem)';
+        bg.classList.remove('bg-gray-300');
+        bg.classList.add('bg-primary');
+      } else {
+        dot.style.transform = 'translateX(0)';
+        bg.classList.remove('bg-primary');
+        bg.classList.add('bg-gray-300');
+      }
+      if(growthChart) {
+        growthChart.options.scales.y.ticks.color = isDark ? '#9ca3af' : '#4b5563';
+        growthChart.options.scales.x.ticks.color = isDark ? '#9ca3af' : '#4b5563';
+        growthChart.update();
+      }
+      setFreq(contributionFrequency);
+    }
+
+    function setupEventListeners() {
+      const sync = (num, slider) => {
+        num.addEventListener('input', (e) => {
+          let raw = e.target.value.replace(/,/g, '');
+          if (!isNaN(raw) || raw === '' || raw === '.') {
+            let val = parseFloat(raw) || 0;
+            if (slider) slider.value = val;
+            calculate();
+          }
+        });
+        
+        num.addEventListener('blur', (e) => {
+           e.target.value = formatNumber(parseNumber(e.target.value));
+        });
+
+        if (slider) {
+          slider.addEventListener('input', (e) => {
+            num.value = formatNumber(e.target.value);
+            calculate();
+          });
+        }
+      };
+
+      sync(elements.initInvestNum, elements.initInvestSlider);
+      sync(elements.returnRateNum, elements.returnRateSlider);
+      sync(elements.durationNum, elements.durationSlider);
+      sync(elements.inflationRateNum, elements.inflationRateSlider);
+      sync(elements.taxRateNum, elements.taxRateSlider);
+      
+      elements.contribNum.addEventListener('input', calculate);
+      elements.contribNum.addEventListener('blur', (e) => {
+        e.target.value = formatNumber(parseNumber(e.target.value));
+      });
+
+      elements.compoundFreq.addEventListener('change', calculate);
+      elements.freqWeekly.addEventListener('click', () => setFreq('weekly'));
+      elements.freqMonthly.addEventListener('click', () => setFreq('monthly'));
+      elements.freqQuarterly.addEventListener('click', () => setFreq('quarterly'));
+
+      elements.themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeUI(isDark);
+      });
+    }
+
+    function setFreq(freq) {
+      contributionFrequency = freq;
+      const isDark = document.documentElement.classList.contains('dark');
+      const btns = {
+        weekly: elements.freqWeekly,
+        monthly: elements.freqMonthly,
+        quarterly: elements.freqQuarterly
+      };
+      
+      Object.keys(btns).forEach(key => {
+        if (key === freq) {
+          btns[key].classList.add('bg-primary', 'text-white');
+          btns[key].classList.remove('text-gray-400', 'text-gray-600', 'dark:text-gray-400');
+        } else {
+          btns[key].classList.remove('bg-primary', 'text-white');
+          btns[key].classList.add(isDark ? 'text-gray-400' : 'text-gray-600');
+        }
+      });
+      calculate();
+    }
+
+    function calculate() {
+      const P = parseNumber(elements.initInvestNum.value);
+      const PMT = parseNumber(elements.contribNum.value);
+      const annualReturnPercent = parseNumber(elements.returnRateNum.value);
+      const durationYears = parseInt(parseNumber(elements.durationNum.value)) || 0;
+      const taxRate = parseNumber(elements.taxRateNum.value) / 100;
+      
+      let periodsPerYear = 12;
+      if (contributionFrequency === 'weekly') periodsPerYear = 52;
+      if (contributionFrequency === 'monthly') periodsPerYear = 12;
+      if (contributionFrequency === 'quarterly') periodsPerYear = 4;
+
+      const r = (annualReturnPercent / 100) / periodsPerYear;
+
+      let chartDataInvested = [P];
+      let chartDataPortfolio = [P];
+      let tableRows = '';
+      
+      let cumulativeInvested = P;
+
+      for (let year = 1; year <= durationYears; year++) {
+        const t = year * periodsPerYear;
+        let currentFV;
+        
+        if (r === 0) {
+          currentFV = P + (PMT * t);
+        } else {
+          // FV = P(1+r)^t + PMT * [((1+r)^t - 1) / r]
+          currentFV = P * Math.pow(1 + r, t) + PMT * ((Math.pow(1 + r, t) - 1) / r);
+        }
+
+        const yearContribution = PMT * periodsPerYear;
+        cumulativeInvested += yearContribution;
+        
+        const prevT = (year - 1) * periodsPerYear;
+        const prevFV = (r === 0) ? P + (PMT * prevT) : P * Math.pow(1 + r, prevT) + PMT * ((Math.pow(1 + r, prevT) - 1) / r);
+        const yearInterest = currentFV - prevFV - yearContribution;
+
+        chartDataInvested.push(cumulativeInvested);
+        chartDataPortfolio.push(currentFV);
+
+        tableRows += `
+          <tr class="hover:bg-gray-50 dark:hover:bg-surface-800 transition-colors border-b border-gray-200 dark:border-gray-800 table-row-border">
+<td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-medium">Year ${year}</td>
+<td class="px-6 py-4 text-gray-900 dark:text-gray-100">$${yearContribution.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+<td class="px-6 py-4 text-emerald-600 dark:text-emerald-500 font-medium">+$${Math.max(0, yearInterest).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+<td class="px-6 py-4 text-gray-900 dark:text-gray-100">$${cumulativeInvested.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+<td class="px-6 py-4 font-bold text-gray-900 dark:text-gray-100">$${currentFV.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+</tr>`;
+      }
+
+      const finalGrossValue = chartDataPortfolio[chartDataPortfolio.length - 1];
+      const totalGrowth = finalGrossValue - cumulativeInvested;
+      const taxAmount = totalGrowth > 0 ? totalGrowth * taxRate : 0;
+      const netFinalValue = finalGrossValue - taxAmount;
+      const netProfit = netFinalValue - cumulativeInvested;
+
+      updateUI(netFinalValue, cumulativeInvested, netProfit);
+      updateChart(chartDataInvested, chartDataPortfolio);
+      elements.tableBody.innerHTML = tableRows;
+    }
+
+    function updateUI(total, invested, profit) {
+      const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+      elements.displayTotal.innerText = formatter.format(total);
+      elements.displayInvested.innerText = formatter.format(invested);
+      elements.displayProfit.innerText = formatter.format(profit);
+    }
+
+    function setupChart() {
+      const ctx = document.getElementById('growthChart').getContext('2d');
+      const isDark = document.documentElement.classList.contains('dark');
+      growthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [
+            { label: 'Portfolio Value', data: [], borderColor: '#1152d4', backgroundColor: 'rgba(17, 82, 212, 0.1)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 3 },
+            { label: 'Total Invested', data: [], borderColor: '#94a3b8', borderDash: [5, 5], fill: false, tension: 0, pointRadius: 0, borderWidth: 2 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              mode: 'index', intersect: false,
+              callbacks: { label: function(context) { return context.dataset.label + ': $' + context.parsed.y.toLocaleString(undefined, {maximumFractionDigits: 0}); } }
+            }
+          },
+          scales: {
+            y: { grid: { color: 'rgba(156, 163, 175, 0.1)' }, ticks: { color: isDark ? '#9ca3af' : '#4b5563', callback: v => '$' + v.toLocaleString() } },
+            x: { grid: { display: false }, ticks: { color: isDark ? '#9ca3af' : '#4b5563' } }
+          }
+        }
+      });
+    }
+
+    function updateChart(invested, portfolio) {
+      if (!growthChart || !invested) return;
+      growthChart.data.labels = invested.map((_, i) => `Yr ${i}`);
+      growthChart.data.datasets[0].data = portfolio;
+      growthChart.data.datasets[1].data = invested;
+      growthChart.update();
+    }
+
+    function exportToCSV() {
+      let csv = "Year,Contribution,Interest Earned,Total Invested,End Balance\n";
+      elements.tableBody.querySelectorAll('tr').forEach(row => {
+        csv += Array.from(row.querySelectorAll('td')).map(c => c.innerText.replace(/[$,+]/g, '')).join(',') + "\n";
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'investment_plan.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);</script>
+<!-- END: LogicScripts -->
+</body></html>
